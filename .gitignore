@@ -354,6 +354,7 @@ resources/
 XppMetadata/
 BPCheck.xml
 BuildModelResult.xml
+BuildModelResult.err.xml
 BuildProjectResult.err.xml
 BuildProjectResult.xml
 CompileLabels.xml

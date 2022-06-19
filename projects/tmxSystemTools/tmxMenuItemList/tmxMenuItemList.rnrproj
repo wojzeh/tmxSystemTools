@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <BuildTasksDirectory Condition=" '$(BuildTasksDirectory)' == ''">$(MSBuildProgramFiles32)\MSBuild\Microsoft\Dynamics\AX</BuildTasksDirectory>
+    <Model>tmxSystemTools</Model>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <OutputPath>bin</OutputPath>
+    <SchemaVersion>2.0</SchemaVersion>
+    <GenerateCrossReferences>True</GenerateCrossReferences>
+    <RunAppCheckerRules>False</RunAppCheckerRules>
+    <LogAppcheckerDiagsAsErrors>False</LogAppcheckerDiagsAsErrors>
+    <ProjectGuid>{d41381d9-c65a-473d-a99c-728b000d82d9}</ProjectGuid>
+    <Name>tmxMenuItemList</Name>
+    <RootNamespace>tmxMenuItemList</RootNamespace>
+    <StartupType>Class</StartupType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <Configuration>Debug</Configuration>
+    <DBSyncInBuild>False</DBSyncInBuild>
+    <GenerateFormAdaptors>False</GenerateFormAdaptors>
+    <Company>
+    </Company>
+    <Partition>initial</Partition>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DataEntityExpandParentChildRelations>False</DataEntityExpandParentChildRelations>
+    <DataEntityUseLabelTextAsFieldName>False</DataEntityUseLabelTextAsFieldName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Classes\" />
+    <Folder Include="Display Menu Items\" />
+    <Folder Include="Forms\" />
+    <Folder Include="Output Menu Items\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AxClass\avrMetadataList">
+      <SubType>Content</SubType>
+      <Name>avrMetadataList</Name>
+      <Link>Classes\avrMetadataList</Link>
+    </Content>
+    <Content Include="AxForm\avrMetadataForm">
+      <SubType>Content</SubType>
+      <Name>avrMetadataForm</Name>
+      <Link>Forms\avrMetadataForm</Link>
+    </Content>
+    <Content Include="AxMenuItemOutput\avrMetadataForm">
+      <SubType>Content</SubType>
+      <Name>avrMetadataForm</Name>
+      <Link>Output Menu Items\avrMetadataForm</Link>
+    </Content>
+    <Content Include="AxMenuItemOutput\avrMetadataListMenuItemAction">
+      <SubType>Content</SubType>
+      <Name>avrMetadataListMenuItemAction</Name>
+      <Link>Output Menu Items\avrMetadataListMenuItemAction</Link>
+    </Content>
+    <Content Include="AxMenuItemOutput\avrMetadataListMenuItemDisplay">
+      <SubType>Content</SubType>
+      <Name>avrMetadataListMenuItemDisplay</Name>
+      <Link>Output Menu Items\avrMetadataListMenuItemDisplay</Link>
+    </Content>
+    <Content Include="AxMenuItemOutput\avrMetadataListMenuItemOutput">
+      <SubType>Content</SubType>
+      <Name>avrMetadataListMenuItemOutput</Name>
+      <Link>Output Menu Items\avrMetadataListMenuItemOutput</Link>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.Common.targets" />
+  <Import Project="$(BuildTasksDirectory)\Microsoft.Dynamics.Framework.Tools.BuildTasks.targets" />
+</Project>

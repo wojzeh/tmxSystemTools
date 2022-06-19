@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32602.291
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FC65038C-1B2F-41E1-A629-BED71D161FFF}") = "tmxSysMultiTableLookup (CUS) [tmxSystemTools]", "tmxSysMultiTableLookup\tmxSysMultiTableLookup.rnrproj", "{1795C252-E83C-49CC-8ABE-69E581ABD619}"
+EndProject
+Project("{FC65038C-1B2F-41E1-A629-BED71D161FFF}") = "tmxMenuItemList (CUS) [tmxSystemTools]", "tmxMenuItemList\tmxMenuItemList.rnrproj", "{D41381D9-C65A-473D-A99C-728B000D82D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1795C252-E83C-49CC-8ABE-69E581ABD619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1795C252-E83C-49CC-8ABE-69E581ABD619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D41381D9-C65A-473D-A99C-728B000D82D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D41381D9-C65A-473D-A99C-728B000D82D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6DE0EDD4-1B6B-4D53-B29D-3978446DE165}
+	EndGlobalSection
+EndGlobal

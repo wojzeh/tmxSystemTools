@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Diagnostics
+  GenerationTime="2022-06-17T23:40:09.7679576+00:00">
+  <Items>
+    <Diagnostic>
+      <DiagnosticType>FormCompilation</DiagnosticType>
+      <Severity>Error</Severity>
+      <Path>CustTable/editContactPersonName</Path>
+      <ElementType>Table Method</ElementType>
+      <Moniker>TypeNotFound</Moniker>
+      <Line>0</Line>
+      <Column>0</Column>
+      <Message>The name 'ContactPersonName' does not denote a class, a table, or an extended data type.</Message>
+    </Diagnostic>
+    <Diagnostic>
+      <DiagnosticType>FormCompilation</DiagnosticType>
+      <Severity>Error</Severity>
+      <Path>CustTable/remainAmountCurPeriod</Path>
+      <ElementType>Table Method</ElementType>
+      <Moniker>TypeNotFound</Moniker>
+      <Line>0</Line>
+      <Column>0</Column>
+      <Message>The name 'CurrencyCode' does not denote a class, a table, or an extended data type.</Message>
+    </Diagnostic>
+  </Items>
+  <Aliases />
+</Diagnostics>

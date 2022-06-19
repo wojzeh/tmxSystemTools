@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AxClass xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>avrMetadataList</Name>
+	<SourceCode>
+		<Declaration><![CDATA[
+using Microsoft.Dynamics.AX.Metadata.MetaModel;
+using Microsoft.Dynamics.Ax.Xpp;
+ 
+class avrMetadataList
+{
+    avrMetadataTableTmp                             avrMetadataTableTmp;
+    System.Collections.Specialized.StringEnumerator items;
+    str                                             languageId = 'en-us';
+
+}
+]]></Declaration>
+		<Methods>
+			<Method>
+				<Name>main</Name>
+				<Source><![CDATA[
+    public static void main(Args _args)
+    {
+        if(_args)
+        {
+            FormDataSource fds = _args.record().dataSource();
+            avrMetadataList::fillMetadataTableTmpForMenuItems(fds.cursor(), _args.parmEnum());
+            fds.research();
+        }
+        else
+        {
+            throw error(Error::wrongUseOfFunction(funcName()));
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>parmMetadataTableTmp</Name>
+				<Source><![CDATA[
+    public avrMetadataTableTmp parmMetadataTableTmp(avrMetadataTableTmp _avrMetadataTableTmp = avrMetadataTableTmp)
+    {
+        avrMetadataTableTmp = _avrMetadataTableTmp;
+        return avrMetadataTableTmp;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>showControlNames</Name>
+				<Source><![CDATA[
+    private void showControlNames(IFormControlCollection _control)
+    {
+        var controlEnumerator = _control.Controls.GetEnumerator();
+ 
+        while (controlEnumerator.MoveNext())
+        {
+            AxFormControl control = controlEnumerator.Current;
+            if (control is IFormControlCollection)
+            {
+                this.showControlNames(control as IFormControlCollection); // Recursion
+            }
+            else
+            {
+                avrMetadataTableTmp.ControlId           = any2Str(control.Name);
+                avrMetadataTableTmp.insert();
+            }
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>getMenuItemOutput</Name>
+				<Source><![CDATA[
+    private void getMenuItemOutput()
+    {
+        items = MetadataSupport::MenuItemOutputNames();
+        while (items.MoveNext())
+        {
+            var item = MetadataSupport::GetMenuItemOutput(items.Current);
+            avrMetadataTableTmp.ControlId           = any2Str(item.Name);
+            avrMetadataTableTmp.ControlName         = SysLabel::labelId2String2( item.Label, languageId);
+            avrMetadataTableTmp.ControlDescription  = SysLabel::labelId2String2( item.HelpText, languageId);
+            avrMetadataTableTmp.insert();
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>getMenuItemAction</Name>
+				<Source><![CDATA[
+    private void getMenuItemAction()
+    {
+        items = MetadataSupport::MenuItemActionNames();
+        while (items.MoveNext())
+        {
+            var item = MetadataSupport::GetMenuItemAction(items.Current);
+            avrMetadataTableTmp.ControlId           = any2Str(item.Name);
+            avrMetadataTableTmp.ControlName         = SysLabel::labelId2String2( item.Label, languageId);
+            avrMetadataTableTmp.ControlDescription  = SysLabel::labelId2String2( item.HelpText, languageId);
+            avrMetadataTableTmp.insert();
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>getMenuItemDisplay</Name>
+				<Source><![CDATA[
+    private void getMenuItemDisplay()
+    {
+        items = MetadataSupport::MenuItemDisplayNames();
+        while (items.MoveNext())
+        {
+            var item = MetadataSupport::GetMenuItemDisplay(items.Current);
+            avrMetadataTableTmp.ControlId           = any2Str(item.Name);
+            avrMetadataTableTmp.ControlName         = SysLabel::labelId2String2( item.Label, languageId);
+            avrMetadataTableTmp.ControlDescription  = SysLabel::labelId2String2( item.HelpText, languageId);
+            avrMetadataTableTmp.insert();
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>getItemNames</Name>
+				<Source><![CDATA[
+    private void getItemNames(MenuItemType _menuItemType)
+    {
+        switch (_menuItemType)
+        {
+            case MenuItemType::Action:
+                this.getMenuItemAction();
+            break;
+            case MenuItemType::Display:
+                this.getMenuItemDisplay();
+            break;
+            case MenuItemType::Output:
+                this.getMenuItemOutput();
+            break;
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>fillMetadataTableTmpForFormControl</Name>
+				<Source><![CDATA[
+    public static avrMetadataTableTmp fillMetadataTableTmpForFormControl(avrMetadataTableTmp _avrMetadataTableTmp, IFormControlCollection _control)
+    {
+        avrMetadataList avrMetadataList = new avrMetadataList();
+        
+        delete_from _avrMetadataTableTmp;
+
+        avrMetadataList.parmMetadataTableTmp(_avrMetadataTableTmp);
+
+        avrMetadataList.showControlNames(_control);
+
+        return avrMetadataList.parmMetadataTableTmp();
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>fillMetadataTableTmpForMenuItems</Name>
+				<Source><![CDATA[
+    public static avrMetadataTableTmp fillMetadataTableTmpForMenuItems(avrMetadataTableTmp _avrMetadataTableTmp, MenuItemType _menuItemType)
+    {
+        avrMetadataList avrMetadataList = new avrMetadataList();
+        
+        delete_from _avrMetadataTableTmp;
+
+        avrMetadataList.parmMetadataTableTmp(_avrMetadataTableTmp);
+
+        avrMetadataList.getItemNames(_menuItemType);
+
+        return avrMetadataList.parmMetadataTableTmp();
+    }
+
+]]></Source>
+			</Method>
+		</Methods>
+	</SourceCode>
+</AxClass>

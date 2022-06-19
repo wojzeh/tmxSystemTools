@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AxClass xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>tmxSysMultiTableLookup</Name>
+	<SourceCode>
+		<Declaration><![CDATA[
+/// <summary>
+/// Multi table lookup. D365FO version based on the original by Vanya Kashperuk
+/// http://kashperuk.blogspot.com/2008/09/sysmultitableloookup-dynamic-lookups.html
+/// </summary>
+public class tmxSysMultiTableLookup extends SysTableLookup
+{
+    FormBuildInt64Control   recIdSelectModeControl;
+    boolean                 isReference;
+}
+]]></Declaration>
+		<Methods>
+			<Method>
+				<Name>parmIsReference</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Is reference lookup
+    /// </summary>
+    /// <param name = "_parm">boolean</param>
+    /// <returns>True if Reference</returns>
+    protected boolean parmIsReference(boolean _parm = isReference)
+    {
+        isReference = _parm;
+        return isReference;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>setSelectMode</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Places the specified <paramref name="formRun" /> form into the correct lookup selection mode.
+    /// </summary>
+    /// <param name="formRun">
+    /// The form to be put into lookup selection mode.
+    /// </param>
+    protected void setSelectMode(FormRun _formRun)
+    {
+        if(isReference)
+        {
+            if (!recIdSelectModeControl)
+            {
+                throw(error(Error::wrongUseOfFunction(funcname())));
+            }
+
+            _formRun.selectRecordMode(_formRun.control(recIdSelectModeControl.id()));
+        }
+        else
+        {
+            super(_formRun);
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>newReferenceParameters</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Constructs <C>tmxSysMultiTableLookup</C> for a formcontrol with a given query
+    /// </summary>
+    /// <param name = "_callingControl">Target form Reference group control</param>
+    /// <param name = "_query">Query</param>
+    /// <param name = "_useLookupValue">Use input value</param>
+    /// <param name = "_referenceResolver">AmbiguousReferenceResolver</param>
+    /// <returns>Instance of <C>tmxSysMultiTableLookup</C></returns>
+    static tmxSysMultiTableLookup newReferenceParameters(FormReferenceControl _callingControl, Query _query, boolean _useLookupValue = true)
+    {
+        tmxSysMultiTableLookup sysTableLookup = tmxSysMultiTableLookup::construct();
+
+        if(_query.dataSourceCount() < 1)
+        {
+            throw error(@"Query needs to be defined before building the lookup");
+        }
+        sysTableLookup.parmIsReference(true);
+        sysTableLookup.parmQuery(_query);
+        sysTableLookup.parmCallingControl(_callingControl);
+        sysTableLookup.parmUseLookupValue(_useLookupValue);
+        
+        return sysTableLookup;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>newParameters</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Constructs <C>tmxSysMultiTableLookup</C> for a formcontrol with a given query
+    /// </summary>
+    /// <param name = "_callingControl">Target form control</param>
+    /// <param name = "_query">Query</param>
+    /// <param name = "_useLookupValue">Use input value</param>
+    /// <param name = "_referenceResolver">AmbiguousReferenceResolver</param>
+    /// <returns>Instance of <C>tmxSysMultiTableLookup</C></returns>
+    static tmxSysMultiTableLookup newParameters(FormControl _callingControl, Query _query, boolean _useLookupValue = true)
+    {
+        tmxSysMultiTableLookup sysTableLookup = tmxSysMultiTableLookup::construct();
+
+        if(_query.dataSourceCount() < 1)
+        {
+            throw error(@"Query needs to be defined before building the lookup");
+        }
+        sysTableLookup.parmQuery(_query);
+        sysTableLookup.parmCallingControl(_callingControl);
+        sysTableLookup.parmUseLookupValue(_useLookupValue);
+        
+        return sysTableLookup;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>construct</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Instantiates <C>tmxSysMultiTableLookup</C>
+    /// </summary>
+    /// <returns>tmxSysMultiTableLookup</returns>
+    static tmxSysMultiTableLookup construct()
+    {
+        return new tmxSysMultiTableLookup();
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>addLookupControlMulti</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Adds form control
+    /// </summary>
+    /// <param name = "_dataSourceNo">Datasource number in the query</param>
+    /// <param name = "_fieldId">Field num</param>
+    /// <param name = "_returnItem">Return item</param>
+    /// <param name = "_methodName">Method name</param>
+    /// <param name = "_label">Label</param>
+    void addLookupControlMulti(int _dataSourceNo, fieldId _fieldId, boolean _returnItem, str _methodName, str _label)
+    {
+        lookupItems += [[_dataSourceNo, _fieldId, _returnItem, _methodName]];
+        if (_label)
+        {
+            this.setLabel(_label);
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>addLookupMethodMulti</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Adds field as form control
+    /// </summary>
+    /// <param name = "_methodName">Method name</param>
+    /// <param name = "_dataSourceNo">Datasource number in the query</param>
+    /// <param name = "_label">Label</param>
+    void addLookupMethodMulti(str _methodName, int _dataSourceNo = 1, str _label ="")
+    {
+        this.addLookupControlMulti(_dataSourceNo, 0, false, _methodName, _label);
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>addLookupFieldMulti</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Adds field as form control
+    /// </summary>
+    /// <param name = "_dataSourceNo">Datasource number in the query</param>
+    /// <param name = "_fieldId">Field num</param>
+    /// <param name = "_returnItem">Return item</param>
+    /// <param name = "_label">Label</param>
+    void addLookupFieldMulti(fieldId _fieldId, int _dataSourceNo = 1, boolean _returnItem = false, str _label = '')
+    {
+        if (_dataSourceNo > query.dataSourceCount())
+        {
+            throw error(Error::wrongUseOfFunction(funcName()));
+        }
+
+        this.addLookupControlMulti(_dataSourceNo, _fieldId, _returnItem, '', _label);
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>joinMode2LinkType</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Chooses LinkType appropriate to JoinMode
+    /// </summary>
+    /// <param name = "_joinMode">JoinMode</param>
+    /// <returns>FormLinkType</returns>
+    protected FormLinkType joinMode2LinkType(JoinMode _joinMode)
+    {
+        switch (_joinMode)
+        {
+            case JoinMode::InnerJoin:
+                return FormLinkType::InnerJoin;
+            case JoinMode::OuterJoin:
+                return FormLinkType::OuterJoin;
+            case JoinMode::ExistsJoin:
+                return FormLinkType::ExistJoin;
+            case JoinMode::NoExistsJoin:
+                return FormLinkType::NotExistJoin;
+        }
+
+        throw error(Error::wrongUseOfFunction(funcName()));
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>configureLookupDataSourceMulti</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Configures the data source of the lookup form.
+    /// </summary>
+    /// <param name = "_formBuildDataSource">FormBuildDataSource</param>
+    /// <param name = "_queryBuildDataSource">QueryBuildDataSource</param>
+    protected void configureLookupDataSourceMulti(FormBuildDataSource _formBuildDataSource, QueryBuildDataSource _queryBuildDataSource)
+    {
+        this.configureLookupDataSource(_formBuildDataSource);
+        if(_queryBuildDataSource.embedded()) //joined() or level() > 1
+        {
+            _formBuildDataSource.linkType(this.joinMode2LinkType(_queryBuildDataSource.joinMode()));
+            _formBuildDataSource.joinSource(_queryBuildDataSource.parentDataSource().name());
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>buildGridMulti</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Builds grid form control
+    /// </summary>
+    /// <param name = "_formBuildGridControl">FormBuildGridControl</param>
+    /// <param name = "_form">Form</param>
+    /// <returns>FormBuildGridControl</returns>
+    protected FormBuildGridControl buildGridMulti(FormBuildGridControl _formBuildGridControl, Form _form)
+    {
+        FormBuildDataSource             formBuildDataSource;
+        FormBuildControl                formBuildControl;
+        Object                          obj;
+        boolean                         returnItem;
+        str                             method;
+        int                             fieldId;
+        int                             i;
+        boolean                         lookupFieldSet = false;
+        int                             dataSourceNo;
+        fieldId                         recIdFieldId;
+        boolean                         firstDS = true;
+        // add fields and display methods for all given data sources
+        for (i = 1; i <= conlen(lookupItems); i++)
+        {
+            [dataSourceNo, fieldId, returnItem, method] = conpeek(lookupItems, i);
+
+            if(firstDS)
+            {
+                firstDS = false;
+                // for the reference case
+                if(isReference)
+                {
+                    recIdFieldId = fieldnum(Common, RecId);
+                    if (recIdFieldId)
+                    {
+                        // Always add a hidden RecId control to add as the selectMode field.
+                        recIdSelectModeControl = _formBuildGridControl.addDataField(_form.dataSource(dataSourceNo).id(), recIdFieldId);
+                        recIdSelectModeControl.visible(false);
+                    }
+                }
+            }
+
+            if (fieldId)
+            {
+                // Add control for a field.
+                formBuildControl = _formBuildGridControl.addDataField(_form.dataSource(dataSourceNo).id(), fieldId);
+            }
+            else
+            {
+                // Add control for a display method.
+                formBuildControl = this.addMethodControl(_formBuildGridControl, _form.dataSource(dataSourceNo), method, i);
+            }
+
+            if(!formBuildControl)
+            {
+                throw error("@SYS72176");
+            }
+            //
+            // Labels could be specified for both fields and display methods, therefore
+            // they must be checked for every element in lookupItems collection.
+            //
+            if (labels[i])
+            {
+                obj = formBuildControl;
+                obj.label(labels[i]);
+            }
+            //
+            // An index of return field and control must be set according to these rules:
+            // - If return item is specified for a field or a display method, then this field or display method
+            // is considered as the return item.
+            // - If return item is not specified at all, then the first field (but not method) is considered
+            // as the return item.
+            // Currenly too much code is relying on the second rule; therefore it cannot be changed.
+            //
+            if (!lookupFieldSet && fieldId      // If lookup field is not set yet AND current item is a field (not a display method)
+                || returnItem)                  // Or if returnItem is explicitly specified for the field or for the display method
+            {
+                controlIdx      = formBuildControl.id();
+                lookupField     = fieldId;
+                lookupFieldSet  = true;
+            }
+        }
+
+        return _formBuildGridControl;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>formRun</Name>
+				<Source><![CDATA[
+    /// <summary>
+    ///    Constructs the form to use as the lookup form.
+    /// </summary>
+    /// <returns>
+    ///    The form to use as the lookup form.
+    /// </returns>
+    protected FormRun formRun()
+    {
+        DictTable                       dictTable;
+        DictField                       dictField;
+        Form                            form = new Form();
+        FormRun                         formRun;
+        FormBuildDesign                 formBuildDesign;
+        FormBuildDataSource             formBuildDataSource;
+        FormDataSource                  formDataSource;
+        FormBuildGridControl            formBuildGridControl;
+        Args                            args;
+        int                             idx;
+        int                             i;
+        FormStringControl               callingStringControl;
+        QueryBuildDataSource            queryBuildDataSource;
+        boolean                         firstDS = true;
+
+        form.name(identifierstr(TemporaryFormName));
+
+        for (i = 1; i <= query.dataSourceCount(); i++)
+        {
+            queryBuildDataSource = query.dataSourceNo(i);
+            formBuildDataSource = form.addDataSource(queryBuildDataSource.name());
+            formBuildDataSource.table(queryBuildDataSource.table());
+            this.configureLookupDataSourceMulti(formBuildDataSource, queryBuildDataSource);
+
+            if(firstDS)
+            {
+                firstDS = false;
+                if(isReference)
+                {
+                    // Require that all fields be selected so that Reference Data sources are updated
+                    // correctly.
+                    formBuildDataSource.onlyFetchActive(false);
+                }
+            }
+        }
+
+        formBuildDesign = form.addDesign('Design');
+        this.buildFormDesign(formBuildDesign);
+
+        formBuildGridControl = formBuildDesign.addControl(FormControlType::Grid,'Grid');
+        formBuildGridControl.dataSource(query.dataSourceNo(1).name());
+        this.buildFormGridDesign(formBuildGridControl);
+
+        idx = formBuildGridControl.id();
+
+        this.buildGridMulti(formBuildGridControl, form);
+        this.buildControlsFinal(formBuildDesign);
+
+        if (lookupField)
+        {
+            dictField = new dictField(tableId, lookupField);
+        }
+
+        args = new Args();
+        args.object(form);
+        args.callerFormControl(callingControl);
+        this.buildArgs(args);
+        //highlighting existing value doesn't work with temp tables
+        if(useLookupValue && !tmpBuffer)
+        {
+            // Let the full kernel-generated lookup process take over.
+            if (callingControl is FormReferenceControl)
+            {
+                if (query != null)
+                {
+                    formRun = FormAutoLookupFactory::buildReferenceLookupFromCustomForm(callingControl as FormReferenceControl, form, args, query);
+                }
+                else
+                {
+                    formRun = FormAutoLookupFactory::buildReferenceLookupFromCustomForm(callingControl as FormReferenceControl, form, args);
+                }
+            }
+            else if (dictField != null)
+            {
+                if (query != null)
+                {
+                    formRun = FormAutoLookupFactory::buildLookupFromCustomForm(callingControl, form, AbsoluteFieldBinding::construct(dictField.name(), dictTable.name()), args, query);
+                }
+                else
+                {
+                    formRun = FormAutoLookupFactory::buildLookupFromCustomForm(callingControl, form, AbsoluteFieldBinding::construct(dictField.name(), dictTable.name()), args);
+                }
+            }
+
+            // The kernel will apply the necessary filter so don't allow this instance to apply a filter
+            // for the lookup control's current value.
+            skipApplicationOfFilter = true;
+
+            if (formRun)
+            {
+                formDataSource  = formRun.dataSource(1);
+            }
+        }
+
+        if (formRun == null)
+        {
+            // Use a watered down lookup that doesn't provide initial positioning.
+            formRun = classfactory.formRunClass(args);
+            formRun.init();
+
+            formDataSource  = formRun.dataSource(1);
+
+            // Set the custom Query before setting the selectTarget or selectMode
+            // as those methods cause Query normalization logic to be run in the kernel.
+            // (e.g., joins are added as required by the target control).
+            if (query)
+            {
+                formDataSource.query(query);
+            }
+
+            formRun.selectTarget(this.parmCallingControl());
+        }
+
+        form = formRun.form();
+        formGridControl = formRun.control(idx);
+        formGridControl.setFocus();
+
+        if (tmpBuffer)
+        {
+            if (query.dataSourceCount() > 1)
+            {
+                throw error("Multiple temporary datasource lookups are not supported");
+            }
+
+            formDataSource.init();
+            //BP deviation documented
+            formDataSource.cursor().setTmp();
+            formDataSource.cursor().setTmpData(tmpBuffer);
+        }
+
+        this.setSelectMode(formRun);
+
+        this.buildSelectionListMulti(formDataSource.query());
+
+        this.addFilter(formRun);
+
+        return formRun;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>buildSelectionListMulti</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Creates selection list from a given query
+    /// </summary>
+    /// <param name = "_query">Query</param>
+    protected void buildSelectionListMulti(Query _query)
+    {
+        boolean                 returnItem;
+        str                     method;
+        int                     fieldId;
+        int                     i;
+        int                     dataSourceNo;
+
+        SelectionField  fieldKind()
+        {
+            int                 j;
+            QueryBuildFieldList qbfl;
+
+            qbfl = _query.dataSourceNo(dataSourceNo).fields();
+            for (j = 1; j <= qbfl.fieldCount(); j++)
+            {
+                if (qbfl.field(j) == fieldId)
+                {
+                    return qbfl.fieldKind(j);
+                }
+            }
+            return SelectionField::Database;
+        }
+
+        
+        for (i = 1; i <= conlen(lookupItems); i++)
+        {
+            [dataSourceNo, fieldId, returnItem, method] = conpeek(lookupItems, i);
+            // FieldId could be 0 if current element represents a display method used
+            // to return values for a lookup column.
+            // If fieldId is 0 then there is no sense to add it to the selection list of the query.
+            if (fieldId)
+            {
+                _query.dataSourceNo(dataSourceNo).addSelectionField(fieldId, fieldKind());
+            }
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>addLookupfield</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Obsolete
+    /// </summary>
+    /// <param name = "_fieldId"></param>
+    /// <param name = "_returnItem"></param>
+    [SysObsolete('This method is not used for multi table lookup. Use addLookupfieldMulti instead.', true)]
+    public void addLookupfield(FieldId _fieldId, boolean _returnItem = false)
+    {
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>addLookupMethod</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Obsolete
+    /// </summary>
+    /// <param name = "_method"></param>
+    /// <param name = "_returnItem"></param>
+    [SysObsolete('This method is not used for multi table lookup. Use addLookupMethodMulti instead.', true)]
+    public void addLookupMethod(str _method, boolean _returnItem = false)
+    {
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>addLookupControl</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Obsolete
+    /// </summary>
+    /// <param name = "_fieldId"></param>
+    /// <param name = "_returnItem"></param>
+    /// <param name = "_methodName"></param>
+    [SysObsolete('This method is not used for multi table lookup. Use addLookupControlMulti instead.', true)]
+    public void addLookupControl(FieldId _fieldId, boolean _returnItem, str _methodName)
+    {
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>buildGrid</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Obsolete
+    /// </summary>
+    /// <param name = "_formBuildGridControl"></param>
+    /// <param name = "_formBuildDataSource"></param>
+    /// <returns></returns>
+    [SysObsolete('This method is not used for multi table lookup. Use buildGridMulti instead.', true)]
+    protected FormBuildGridControl buildGrid(FormBuildGridControl _formBuildGridControl, FormBuildDataSource _formBuildDataSource)
+    {
+        return null;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>buildSelectionList</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Obsolete
+    /// </summary>
+    /// <param name = "_queryBuildDataSource"></param>
+    [SysObsolete('This method is not used for multi table lookup. Use buildSelectionListMulti instead.', true)]
+    protected void buildSelectionList(QueryBuildDataSource _queryBuildDataSource)
+    {
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>performFormReferenceLookup</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Presents the lookup form to the user.
+    /// </summary>
+    /// <returns>
+    /// The selected record.
+    /// </returns>
+    public Common performFormReferenceLookup()
+    {
+        FormReferenceControl    referenceControl;
+        FormRun                 formRun;
+        Common                  selectedRecord;
+
+        referenceControl = callingControl as FormReferenceControl;
+
+        if (!referenceControl)
+        {
+            throw(error(Error::wrongUseOfFunction(funcname())));
+        }
+
+        formRun = this.formRun();
+
+        referenceControl.performFormLookup(formRun);
+
+        selectedRecord = formRun.selectRecordModeSelectedRecord();
+
+        return selectedRecord;
+    }
+
+]]></Source>
+			</Method>
+		</Methods>
+	</SourceCode>
+</AxClass>
